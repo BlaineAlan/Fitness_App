@@ -2,7 +2,7 @@ import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from "expo-router";
 import moment from 'moment';
 import React, { useRef, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { List, Provider as PaperProvider } from 'react-native-paper';
 
 const LogWorkoutScreen = () => {
@@ -10,6 +10,7 @@ const LogWorkoutScreen = () => {
   const { selectedDate } = useLocalSearchParams();
   const [selectedColor, setSelectedColor] = useState('red');
 
+  
   const handleSave = () => {
     router.replace({
       pathname: '/',
@@ -90,6 +91,21 @@ const LogWorkoutScreen = () => {
     const [text, onChangeText] = React.useState('');
     return (
       <View style={styles.smallTextBox}>
+        <TextInput
+          value={text}
+          onChangeText={onChangeText}
+          style={styles.smallText}
+          textAlign='center'
+          keyboardType='number-pad'
+        />
+      </View>
+    );
+  };
+
+  const WeightInput = () => {
+    const [text, onChangeText] = React.useState('');
+    return(
+      <View style={styles.WeightBox}>
         <TextInput
           value={text}
           onChangeText={onChangeText}
@@ -201,6 +217,22 @@ const LogWorkoutScreen = () => {
     );
   };
 
+  const Notes = () => {
+    const [text, onChangeText] = React.useState('');
+    return (
+      <View style={styles.textbox}>
+        <TextInput
+          value={text}
+          onChangeText={onChangeText}
+          style={styles.notestext}
+          multiline={true}
+          textAlignVertical='top'
+          scrollEnabled={true}
+        />
+      </View>
+    );
+  };
+
 
   return (
     <View style={styles.container}>
@@ -219,7 +251,6 @@ const LogWorkoutScreen = () => {
         <Text style={styles.text}>
           Exercises
         </Text>
-        
       </View>
       <ExerciseDropdown/>
 
@@ -236,6 +267,21 @@ const LogWorkoutScreen = () => {
         </Text>
         <RepInput/>
       </View>
+
+      <View style={styles.weightText}>
+        <Text style={styles.text}>
+          Weight
+        </Text>
+        <WeightInput/>
+      </View>
+
+      <Text style={styles.lbstext}>
+          lbs
+      </Text>
+
+      <Notes/>
+
+
       
       <View>
         {['red', 'blue', 'green'].map((color) => (
@@ -248,7 +294,7 @@ const LogWorkoutScreen = () => {
       </View>
 
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.text}>Save</Text>
+        <Text style={styles.savetext}>Save</Text>
       </TouchableOpacity>
 
       
@@ -388,11 +434,66 @@ const styles = StyleSheet.create({
     width: 40,
     borderRadius: 20,
     marginRight: 15,
-    borderColor: 'white'
+    borderColor: 'white',
+    bottom: 700,
+    left: 165
   },
   saveButton: {
-    backgroundColor: "gray",
-  
+    backgroundColor: "#90EEBF",
+    bottom: 50,
+    height: 50,
+    width: 100,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  savetext: {
+    color: 'black',
+    fontSize: 30,
+    bottom: 2
+  },
+  WeightBox: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    borderWidth: 2,
+    borderColor: '#BD4FD3',
+    height: 40,
+    width: 60,
+    backgroundColor: '#220530',
+    borderRadius: 10,
+    bottom: -45,
+    left: 5
+  },
+  weightText: {
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+    bottom: 575,
+    right: 100
+  },
+  lbstext: {
+    color: 'white',
+    fontSize: 24,
+    position: 'fixed',
+    bottom: 385,
+    left: 130
+  },
+  textbox: {
+    position: 'absolute',
+    borderWidth: 2,
+    borderColor: '#BD4FD3',
+    height: 100,
+    width: 300,
+    backgroundColor: '#220530',
+    borderRadius: 10,
+    bottom: 150,
+  },
+  notestext: {
+    color: 'white',
+    fontSize: 18,
+    height: 100,
+    width: 298,
   }
   
 });

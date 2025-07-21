@@ -4,17 +4,15 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Calendar } from 'react-native-calendars';
 
+
 /**
  * To-do list:
  * 
- *Fix shifting on longer months
  *Add your own categories and exercises
- *Add weight to the list of things
- *Add multiple exercises
- *Add notes
- *Color code the workout and save
- *See the correct color dot on the calender
- *Click view day and see the workouts for that day and add more if you want
+ *Add multiple exercises 
+ *Color code the workout and save ~
+ *See the correct color dot on the calender ~
+ *Click view day and see the workouts for that day and add more if you want ~
  * 
  * More features can be added later if I want but I just need to get it done for now
  * 
@@ -73,8 +71,6 @@ const HomeScreen = () => {
 
   const MainCalendar = ( { selectedDate, setSelectedDate }) => {
     
-
-
     return (
         <View style={styles.calendar_box}>
           <Calendar
@@ -121,15 +117,12 @@ const HomeScreen = () => {
     );
   };
 
+
+
   return (
     <View style={styles.container}>
 
       <TopBorder/>
-
-      <Text 
-        style={styles.welcome_text}>
-        Welcome, Blaine
-      </Text>
 
 
       <MainCalendar
@@ -151,8 +144,10 @@ const HomeScreen = () => {
       <PurpleButton 
         text="View Day"
         style={styles.button2}
-        onPress={() => router.push('/main/LogWorkoutScreen')}
-      />
+        onPress={() => router.push({
+          pathname: '/main/ViewDayScreen',
+          params: { selectedDate }
+        })}      />
       
       
     </View>
@@ -167,32 +162,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   border: {
-    position: 'fixed',
+    position: 'absolute',
     height: 50,
     width: 450,
     backgroundColor: "#19021A",
-    bottom: 140,  
+    bottom: 865,  
   },
   text_buttons: {
     fontSize: 40, 
     color: 'white', 
     bottom: -20
   },
-  welcome_text: {
-    position: 'fixed',
-    color: 'white', 
-    fontSize: 40,
-    bottom: 130,
- 
-  },
   calendar_box: {
-    position: "fixed", 
+    position: 'fixed',
     bottom: 100, 
     width: 350, 
     borderWidth: 3, 
     borderColor: "#BD4FD3", 
     borderRadius: 10, 
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
   button1: {
     position: 'fixed',
