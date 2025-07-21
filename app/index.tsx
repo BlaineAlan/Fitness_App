@@ -9,11 +9,11 @@ import { Calendar } from 'react-native-calendars';
  * To-do list:
  * 
  *Add your own categories and exercises
- *Add multiple exercises 
- *Color code the workout and save ~
- *See the correct color dot on the calender ~
- *Click view day and see the workouts for that day and add more if you want ~
- * 
+ *Add multiple exercises per workout 
+ *Color code the workout and save 
+ *See the correct color dot on the calendar 
+ *Click view day and see the workouts for that day and add more if you want 
+ *
  * More features can be added later if I want but I just need to get it done for now
  * 
  */

@@ -2,13 +2,177 @@ import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from "expo-router";
 import moment from 'moment';
 import React, { useRef, useState } from 'react';
-import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, FlatList } from 'react-native';
 import { List, Provider as PaperProvider } from 'react-native-paper';
+import { ColorWheel } from 'react-native-color-wheel';
+
+
+const TitleInput = ({ value, onChangeText }) => {
+  const inputRef = useRef<TextInput>(null);
+  const [isFocused, setIsFocused] = useState(false);
+  const [hasSelectedOnce, setHasSelectedOnce] = useState(false);
+  
+
+  return (
+    <View style={styles.TextBox}>
+      <TextInput
+        ref={inputRef}
+        value={value}
+        onChangeText={onChangeText}
+        onFocus={() => {
+          setIsFocused(true);
+          setHasSelectedOnce(false);
+        }}
+        onBlur={() => setIsFocused(false)}
+        style={styles.TitleText}
+        textAlign='center'
+        selection={
+          isFocused && !hasSelectedOnce 
+          ? { start: 0, end: value.length }
+          : undefined
+        }
+        onSelectionChange={() => {
+          if (isFocused && !hasSelectedOnce) setHasSelectedOnce(true);
+        }}
+      />
+    </View>
+  );
+};
+
+const SetInput = ({ value, onChangeText }) => {
+  return (
+    <View style={styles.smallTextBox}>
+      <TextInput
+        value={value}
+        onChangeText={onChangeText}
+        style={styles.smallText}
+        textAlign='center'
+        keyboardType='number-pad'
+      />
+    </View>
+  );
+};
+
+const RepInput = ({ value, onChangeText }) => {
+  return (
+    <View style={styles.smallTextBox}>
+      <TextInput
+        value={value}
+        onChangeText={onChangeText}
+        style={styles.smallText}
+        textAlign='center'
+        keyboardType='number-pad'
+      />
+    </View>
+  );
+};
+
+
+const WeightInput = ({ value, onChangeText }) => {
+  return(
+    <View style={styles.WeightBox}>
+      <TextInput
+        value={value}
+        onChangeText={onChangeText}
+        style={styles.smallText}
+        textAlign='center'
+        keyboardType='number-pad'
+      />
+    </View>
+  );
+};
+
+const Notes = ({ value, onChangeText }) => {
+  return (
+    <View style={styles.textbox}>
+      <TextInput
+        value={value}
+        onChangeText={onChangeText}
+        style={styles.notestext}
+        multiline={true}
+        textAlignVertical='top'
+        scrollEnabled={true}
+      />
+    </View>
+  );
+};
+
+//Working kind of but cannot read property 'r' of null error keeps popping up.
+const ColorSelector = ({ selectedColor, onColorChange }) => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [customColor, setCustomColor] = useState(selectedColor || '#ff0000');
+  const [savedColors, setSavedColors] = useState(['#ff0000', '#00ff00', '#0000ff']);
+
+  const addCustomColor = () => {
+    if (!savedColors.includes(customColor)) {
+      setSavedColors([...savedColors, customColor]);
+    }
+    onColorChange(customColor);
+    setModalVisible(false);
+  };
+
+  return (
+    <View>
+      <TouchableOpacity
+        style={{ width: 30, height: 30, borderRadius: 15, backgroundColor: selectedColor }}
+        onPress={() => setModalVisible(true)}
+      />
+      <Modal visible={modalVisible} transparent={false} animationType="slide">
+        <View style={{ flex: 1, padding: 20 }}>
+          <Text>Choose a Color</Text>
+
+          {/* Saved Color Swatches */}
+          <FlatList
+            horizontal
+            data={savedColors}
+            keyExtractor={(item) => item}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={{
+                  width: 30, height: 30, margin: 5, borderRadius: 15, backgroundColor: item,
+                  borderWidth: item === selectedColor ? 2 : 0,
+                  borderColor: 'black'
+                }}
+                onPress={() => {
+                  onColorChange(item);
+                  setModalVisible(false);
+                }}
+              />
+            )}
+          />
+
+          {/* Color Wheel */}
+          <ColorWheel
+            initialColor={customColor}
+            onColorChangeComplete={c => setCustomColor(c)}
+            style={{ width: 200, height: 200, marginVertical: 20 }}
+          />
+
+          {/* Save New Color */}
+          <TouchableOpacity onPress={addCustomColor} style={{ padding: 10, backgroundColor: 'purple', borderRadius: 10 }}>
+            <Text style={{ color: 'white', textAlign: 'center' }}>Add + Use Color</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => setModalVisible(false)}>
+            <Text style={{ textAlign: 'center', marginTop: 10 }}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+    </View>
+  );
+};
+
 
 const LogWorkoutScreen = () => {
   const router = useRouter();
   const { selectedDate } = useLocalSearchParams();
   const [selectedColor, setSelectedColor] = useState('red');
+  const [workoutName, setWorkoutName] = useState("New Workout Name");
+  const [selectedExercise, setSelectedExercise] = useState(null);
+  const [sets, setSets] = React.useState('');
+  const [reps, setReps] = React.useState('');
+  const [weight, setWeight] = React.useState('');
+  const [notes, setNotes] = React.useState('');
 
   
   const handleSave = () => {
@@ -29,38 +193,7 @@ const LogWorkoutScreen = () => {
     );
   };
 
-  const TitleInput = () => {
-    const [workoutName, setWorkoutName] = useState("New Workout Name");
-    const inputRef = useRef<TextInput>(null);
-    const [isFocused, setIsFocused] = useState(false);
-    const [hasSelectedOnce, setHasSelectedOnce] = useState(false);
-    
 
-    return (
-      <View style={styles.TextBox}>
-        <TextInput
-          ref={inputRef}
-          value={workoutName}
-          onChangeText={setWorkoutName}
-          onFocus={() => {
-            setIsFocused(true);
-            setHasSelectedOnce(false);
-          }}
-          onBlur={() => setIsFocused(false)}
-          style={styles.TitleText}
-          textAlign='center'
-          selection={
-            isFocused && !hasSelectedOnce 
-            ? { start: 0, end: workoutName.length }
-            : undefined
-          }
-          onSelectionChange={() => {
-            if (isFocused && !hasSelectedOnce) setHasSelectedOnce(true);
-          }}
-        />
-      </View>
-    );
-  };
 
   const DateInput = () => {
     return (
@@ -72,50 +205,6 @@ const LogWorkoutScreen = () => {
     );
   };
 
-  const SetInput = () => {
-    const [text, onChangeText] = React.useState('');
-    return (
-      <View style={styles.smallTextBox}>
-        <TextInput
-          value={text}
-          onChangeText={onChangeText}
-          style={styles.smallText}
-          textAlign='center'
-          keyboardType='number-pad'
-        />
-      </View>
-    );
-  };
-
-  const RepInput = () => {
-    const [text, onChangeText] = React.useState('');
-    return (
-      <View style={styles.smallTextBox}>
-        <TextInput
-          value={text}
-          onChangeText={onChangeText}
-          style={styles.smallText}
-          textAlign='center'
-          keyboardType='number-pad'
-        />
-      </View>
-    );
-  };
-
-  const WeightInput = () => {
-    const [text, onChangeText] = React.useState('');
-    return(
-      <View style={styles.WeightBox}>
-        <TextInput
-          value={text}
-          onChangeText={onChangeText}
-          style={styles.smallText}
-          textAlign='center'
-          keyboardType='number-pad'
-        />
-      </View>
-    );
-  };
 
   const BackButton = ( { onPress } ) => {
     return (
@@ -133,7 +222,6 @@ const LogWorkoutScreen = () => {
   const ExerciseDropdown = () => {
     const [expandedGroup, setExpandedGroup] = React.useState(null);
     const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
-    const [selectedExercise, setSelectedExercise] = React.useState(null);
 
     const toggleDropdown = () => setIsDropdownOpen(prev => !prev);
 
@@ -217,21 +305,7 @@ const LogWorkoutScreen = () => {
     );
   };
 
-  const Notes = () => {
-    const [text, onChangeText] = React.useState('');
-    return (
-      <View style={styles.textbox}>
-        <TextInput
-          value={text}
-          onChangeText={onChangeText}
-          style={styles.notestext}
-          multiline={true}
-          textAlignVertical='top'
-          scrollEnabled={true}
-        />
-      </View>
-    );
-  };
+
 
 
   return (
@@ -239,7 +313,14 @@ const LogWorkoutScreen = () => {
       
       <TopBorder/>
 
-      <TitleInput/>
+      <TitleInput value={workoutName} onChangeText={setWorkoutName}/>
+
+      <View style={{ marginVertical: 50}}>
+        <ColorSelector
+          selectedColor={selectedColor}
+          onColorChange={setSelectedColor}
+        />
+      </View>
 
       <DateInput/>
 
@@ -258,40 +339,29 @@ const LogWorkoutScreen = () => {
         <Text style={styles.text}>
           Sets
         </Text>
-        <SetInput/>
+        <SetInput value={sets} onChangeText={setSets}/>
       </View>
 
       <View style={styles.reptext}>
         <Text style={styles.text}>
           Reps
         </Text>
-        <RepInput/>
+        <RepInput value={reps} onChangeText={setReps}/>
       </View>
 
       <View style={styles.weightText}>
         <Text style={styles.text}>
           Weight
         </Text>
-        <WeightInput/>
+        <WeightInput value={weight} onChangeText={setWeight}/>
       </View>
 
       <Text style={styles.lbstext}>
           lbs
       </Text>
 
-      <Notes/>
+      <Notes value={notes} onChangeText={setNotes}/>
 
-
-      
-      <View>
-        {['red', 'blue', 'green'].map((color) => (
-          <TouchableOpacity
-            key={color}
-            style={[styles.colorDot, { backgroundColor: color, borderWidth: selectedColor === color ? 3 : 0}]}
-            onPress={() => setSelectedColor(color)}
-          />
-        ))}
-      </View>
 
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
         <Text style={styles.savetext}>Save</Text>
