@@ -4,7 +4,7 @@ import moment from 'moment';
 import React, { useRef, useState } from 'react';
 import { Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, FlatList } from 'react-native';
 import { List, Provider as PaperProvider } from 'react-native-paper';
-import { ColorWheel } from 'react-native-color-wheel';
+import ColorPicker from 'react-native-wheel-color-picker'
 
 
 const TitleInput = ({ value, onChangeText }) => {
@@ -97,67 +97,56 @@ const Notes = ({ value, onChangeText }) => {
   );
 };
 
-//Working kind of but cannot read property 'r' of null error keeps popping up.
-const ColorSelector = ({ selectedColor, onColorChange }) => {
+const ColorPick = ( { selectedColor = '#000', onColorChange } ) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [customColor, setCustomColor] = useState(selectedColor || '#ff0000');
-  const [savedColors, setSavedColors] = useState(['#ff0000', '#00ff00', '#0000ff']);
+  const [currentColor, setCurrentColor] = useState(selectedColor);
+  
+  const handleColorChange = (color) => {
+    setCurrentColor(color);
+  };
 
-  const addCustomColor = () => {
-    if (!savedColors.includes(customColor)) {
-      setSavedColors([...savedColors, customColor]);
-    }
-    onColorChange(customColor);
+  const handleColorSelect = () => {
+    onColorChange(currentColor);
     setModalVisible(false);
   };
 
   return (
     <View>
       <TouchableOpacity
-        style={{ width: 30, height: 30, borderRadius: 15, backgroundColor: selectedColor }}
         onPress={() => setModalVisible(true)}
+        style={[styles.colorButton, {backgroundColor:selectedColor}]}
       />
-      <Modal visible={modalVisible} transparent={false} animationType="slide">
-        <View style={{ flex: 1, padding: 20 }}>
-          <Text>Choose a Color</Text>
 
-          {/* Saved Color Swatches */}
-          <FlatList
-            horizontal
-            data={savedColors}
-            keyExtractor={(item) => item}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={{
-                  width: 30, height: 30, margin: 5, borderRadius: 15, backgroundColor: item,
-                  borderWidth: item === selectedColor ? 2 : 0,
-                  borderColor: 'black'
-                }}
-                onPress={() => {
-                  onColorChange(item);
-                  setModalVisible(false);
-                }}
-              />
-            )}
-          />
+      <Modal
+        visible={modalVisible}
+        transparent={true}
+        animationType='slide'
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.colorBack}>
+          <View style={styles.colorWheel}>
+            <ColorPicker
+              color={currentColor}
+              swatches={true}
+              onColorChange={handleColorChange}
+              thumbSize={30}
+              sliderSize={30}
+              noSnap={true}
+              row={false}
+              swatchesOnly={false}
+              
+            />
 
-          {/* Color Wheel */}
-          <ColorWheel
-            initialColor={customColor}
-            onColorChangeComplete={c => setCustomColor(c)}
-            style={{ width: 200, height: 200, marginVertical: 20 }}
-          />
+            <TouchableOpacity style={styles.colorSaveButton} onPress={handleColorSelect}>
+              <Text style={{color: 'black', fontSize: 30, bottom: 2}}>Save</Text>
+            </TouchableOpacity>
 
-          {/* Save New Color */}
-          <TouchableOpacity onPress={addCustomColor} style={{ padding: 10, backgroundColor: 'purple', borderRadius: 10 }}>
-            <Text style={{ color: 'white', textAlign: 'center' }}>Add + Use Color</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => setModalVisible(false)}>
-            <Text style={{ textAlign: 'center', marginTop: 10 }}>Cancel</Text>
-          </TouchableOpacity>
+            <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.cancelButton}>
+              <Text style={{color: 'black', fontSize: 30, bottom: 2}}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </Modal>
+    </Modal>
     </View>
   );
 };
@@ -306,8 +295,6 @@ const LogWorkoutScreen = () => {
   };
 
 
-
-
   return (
     <View style={styles.container}>
       
@@ -315,17 +302,16 @@ const LogWorkoutScreen = () => {
 
       <TitleInput value={workoutName} onChangeText={setWorkoutName}/>
 
-      <View style={{ marginVertical: 50}}>
-        <ColorSelector
-          selectedColor={selectedColor}
-          onColorChange={setSelectedColor}
-        />
-      </View>
 
       <DateInput/>
 
       <BackButton
         onPress={() => router.back()}
+      />
+
+      <ColorPick
+        selectedColor={selectedColor}
+        onColorChange={setSelectedColor}
       />
 
       <View style={styles.exercisetext}>
@@ -543,11 +529,11 @@ const styles = StyleSheet.create({
     right: 100
   },
   lbstext: {
+    position: 'absolute',
     color: 'white',
     fontSize: 24,
-    position: 'fixed',
-    bottom: 385,
-    left: 130
+    bottom: 530,
+    right: 65
   },
   textbox: {
     position: 'absolute',
@@ -564,6 +550,51 @@ const styles = StyleSheet.create({
     fontSize: 18,
     height: 100,
     width: 298,
+  },
+  colorWheel: {
+    position: 'absolute',
+    bottom: 300,
+    backgroundColor: '#220530',
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#BD4FD3',
+    margin: 5
+  },
+  colorButton: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    position: 'absolute',
+    top: 120,
+    left: 150
+  },
+  cancelButton: {
+    position: 'absolute',
+    top: 20,
+    left: 7,
+    backgroundColor: "#90EEBF",
+    height: 50,
+    width: 100,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  colorBack: {
+    justifyContent: 'center',
+    flex: 1
+  },
+  colorSaveButton: {
+    position: 'absolute',
+    top: 20,
+    left: 290,
+    backgroundColor: "#90EEBF",
+    height: 50,
+    width: 100,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
   }
   
 });
