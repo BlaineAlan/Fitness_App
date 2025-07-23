@@ -3,15 +3,12 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Calendar } from 'react-native-calendars';
-
+import * as FileSystem from 'expo-file-system';
 
 /**
  * To-do list:
  * 
- *Add your own categories and exercises
- *Add multiple exercises per workout 
- *Color code the workout and save 
- *See the correct color dot on the calendar 
+ *Save all info and see the correct color dot on the calendar 
  *Click view day and see the workouts for that day and add more if you want 
  *
  * More features can be added later if I want but I just need to get it done for now
@@ -27,17 +24,66 @@ const HomeScreen = () => {
 
   const { selectedDate: newWorkoutDate, workoutColor} = useLocalSearchParams();
 
-  useEffect(() => {
-    if (newWorkoutDate && workoutColor) {
-      setWorkoutDots(prev => ({
-        ...prev, 
-        [newWorkoutDate]: {
-          marked: true,
-          dots: [{ color: workoutColor }]
-        }
-      }));
+  const fileUri = FileSystem.documentDirectory + 'workouts.json';
+
+  const loadWorkouts = async (): Promise<Record<string, Workout>> => {
+    try {
+      const contents = await FileSystem.readAsStringAsync(fileUri);
+      const data = JSON.parse(contents);
+      return data;
+    } catch (e) {
+      console.warn("No Workouts found or failed to load", e);
     }
-  }, [newWorkoutDate, workoutColor]);
+  };
+
+  useEffect(() => {
+  async function fetchWorkouts() {
+    const loadedWorkouts = await loadWorkouts();
+    const dots = mapWorkoutsToDots(loadedWorkouts);
+    setWorkoutDots(dots);
+  }
+  fetchWorkouts();
+}, []);
+
+type Workout = {
+  Workoutname?: string;
+  date?: string;
+  color?: string;
+  notes?: string;
+  exercises?: Array<{
+    name: string;
+    sets: string | number;
+    reps: string | number;
+    weight: string | number;
+  }>;
+};
+
+  const mapWorkoutsToDots = (workouts) => {
+    const dots = {};
+    console.log(workouts)
+    for(const [date, workout] of Object.entries(workouts)) {
+      const typedWorkout = workout as Workout;
+
+      dots[date] = {
+        marked:true,
+        dots: [{ color: typedWorkout.color || '#000'}]
+      };
+    }
+    return dots;
+  };
+
+
+  // useEffect(() => {
+  //   if (newWorkoutDate && workoutColor) {
+  //     setWorkoutDots(prev => ({
+  //       ...prev, 
+  //       [newWorkoutDate]: {
+  //         marked: true,
+  //         dots: [{ color: workoutColor }]
+  //       }
+  //     }));
+  //   }
+  // }, [newWorkoutDate, workoutColor]);
 
   const getMarkedDates = () => {
     const base = workoutDots[selectedDate] || {};
