@@ -260,24 +260,18 @@ const LogWorkoutScreen = () => {
   setWeight('');
 };
 
-const workout = {
-  Workoutname: workoutName,
-  date: selectedDate,
-  color: selectedColor,
-  notes: notes,
-  exercises: [{
-    name: selectedExercise,
-    sets: sets,
-    reps: reps,
-    weight: weight
-  }]
-}
+
 
   
   const handleSave = async () => {
-    router.replace({
-      pathname: '/',
-    });
+
+    const workout = {
+      Workoutname: workoutName,
+      date: selectedDate,
+      color: selectedColor,
+      notes: notes,
+      exercises: exercises
+    }
 
     try {
         // Load existing
@@ -289,10 +283,14 @@ const workout = {
         existing[workout.date] = workout;
 
         await FileSystem.writeAsStringAsync(fileUri, JSON.stringify(existing));
-        console.log('Workout saved!', fileUri);
+        //console.log('Workout saved!', fileUri);
       } catch (e) {
         console.error('Failed to save workout', e);
       }
+      //console.log("Saving exercises:", exercises);
+      router.replace({
+      pathname: '/',
+    });
     };
 
     const loadWorkouts = async () => {

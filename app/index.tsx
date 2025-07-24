@@ -4,16 +4,9 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Calendar } from 'react-native-calendars';
 import * as FileSystem from 'expo-file-system';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from "react";
 
-/**
- * To-do list:
- * 
- *Save all info and see the correct color dot on the calendar 
- *Click view day and see the workouts for that day and add more if you want 
- *
- * More features can be added later if I want but I just need to get it done for now
- * 
- */
 
 const HomeScreen = () => {
   const router = useRouter();
@@ -26,6 +19,23 @@ const HomeScreen = () => {
 
   const fileUri = FileSystem.documentDirectory + 'workouts.json';
 
+
+  /**
+   * Used for erasing all existing workout data
+   */
+
+  // useEffect(() => {
+  //   const clearWorkoutData = async () => {
+  //     try {
+  //       await FileSystem.deleteAsync(fileUri, { idempotent: true });
+  //       console.log('Workout data cleared!');
+  //     } catch (e) {
+  //       console.error('Failed to clear workout data:', e);
+  //     }
+  //   };
+  //   clearWorkoutData();
+  // }, []);
+
   const loadWorkouts = async (): Promise<Record<string, Workout>> => {
     try {
       const contents = await FileSystem.readAsStringAsync(fileUri);
@@ -36,14 +46,19 @@ const HomeScreen = () => {
     }
   };
 
-  useEffect(() => {
-  async function fetchWorkouts() {
-    const loadedWorkouts = await loadWorkouts();
-    const dots = mapWorkoutsToDots(loadedWorkouts);
-    setWorkoutDots(dots);
-  }
-  fetchWorkouts();
-}, []);
+
+useFocusEffect(
+  useCallback(() => {
+    const fetchWorkouts = async () => {
+      const loadedWorkouts = await loadWorkouts();
+      const dots = mapWorkoutsToDots(loadedWorkouts);
+      setWorkoutDots(dots);
+    };
+
+    fetchWorkouts();
+  }, [])
+);
+
 
 type Workout = {
   Workoutname?: string;
@@ -60,7 +75,6 @@ type Workout = {
 
   const mapWorkoutsToDots = (workouts) => {
     const dots = {};
-    console.log(workouts)
     for(const [date, workout] of Object.entries(workouts)) {
       const typedWorkout = workout as Workout;
 
@@ -73,38 +87,30 @@ type Workout = {
   };
 
 
-  // useEffect(() => {
-  //   if (newWorkoutDate && workoutColor) {
-  //     setWorkoutDots(prev => ({
-  //       ...prev, 
-  //       [newWorkoutDate]: {
-  //         marked: true,
-  //         dots: [{ color: workoutColor }]
-  //       }
-  //     }));
-  //   }
-  // }, [newWorkoutDate, workoutColor]);
-
   const getMarkedDates = () => {
-    const base = workoutDots[selectedDate] || {};
-    return {
-      ...workoutDots,
-      [selectedDate]: {
-        ...base,
+    const marked = {...workoutDots};
+
+    if(!marked[selectedDate]) {
+      marked[selectedDate] = {};
+    }
+
+    
+      marked[selectedDate] = {
+        ...marked[selectedDate],
         selected: true,
-        selectedColor: '#90EEBF',
+        
         selectedTextColor: "black",
         customStyles: {
           container: {
-          backgroundColor: '#90EEBF',
-          borderRadius: 16,
+            backgroundColor: '#90EEBF',
+            borderRadius: 16,
           },
           text: {
             color: 'black',
           },
         },
-      },
-    };
+      };
+      return marked;
   };
 
   const TopBorder = () => {
@@ -115,7 +121,7 @@ type Workout = {
     );
   };
 
-  const MainCalendar = ( { selectedDate, setSelectedDate }) => {
+  const MainCalendar = ( { selectedDate, setSelectedDate, markedDates, markingType }) => {
     
     return (
         <View style={styles.calendar_box}>
@@ -126,8 +132,8 @@ type Workout = {
               setSelectedDate(day.dateString);
               setCurrentMonth(day.dateString);
             }}
-            markedDates={getMarkedDates()}
-            markingType={'custom'}
+            markedDates={markedDates}
+            markingType={markingType}
 
             theme={{
               calendarBackground: "#220530",
@@ -135,9 +141,7 @@ type Workout = {
               monthTextColor: "white",
               dayTextColor: "white",
               textDisabledColor: "purple",
-              selectedDayBackgroundColor: "white",
-              selectedDayTextColor: "white",
-              selectedDotColor: "white",
+              selectedDayBackgroundColor: "#90EEBF",
               todayTextColor: "white",
               textSectionTitleColor: "#BD4FD3",
               textMonthFontSize: 30,
@@ -193,7 +197,8 @@ type Workout = {
         onPress={() => router.push({
           pathname: '/main/ViewDayScreen',
           params: { selectedDate }
-        })}      />
+        })}      
+        />
       
       
     </View>
