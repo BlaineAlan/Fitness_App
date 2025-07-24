@@ -1,50 +1,27 @@
-# Welcome to your Expo app 👋
+# FITNESS APP
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This is my personal project Fitness App, created over the summer of 2025! It is built using React Native and Expo. Feel free to fork this project and mess with it yourself. The core functionality is completed, but there are some minor changes I'd like to add in the future if I have the time for it (seen below). The idea for this app came from me not really knowing the most efficient way to track workouts. A notebook? Google Doc? It just didn't seem like that was the best approach, and most apps I could find were mediocre at best and focused heavily on other fitness features (nutrition, coaching, trying to get your money through a premium membership), that just put me off them. So when the Summer between semesters came around and I wanted to work on a personal project, I thought building my own app to solve this problem would be fun, and it has proved to be so. This was my first experience with app building, using react native and expo, and using javascript for a project of this scale, so there was a lot of learning to be done. I'm sure in the future I could build this same app in like 5 days and it would be much better too, but for a first go around, I'm pretty happy with it and I hope you enjoy as well!
 
-## Get started
+# GENERAL USE 
 
-1. Install dependencies
+I wanted this app to be quite simple and easy to use for anyone. When you load in you have a calendar and 2 buttons. The calendar can be navigated using the arrows at the top. You'll see that the current day is highlighted on the calendar. You can click around on different days and those days will highlighted as well. You can log workouts for today, or maybe you forgot to log one from yesterday, or maybe you're planning ahead on what you want to do for the next week, whatever your case may be you can go ahead and click the "Log Workout" button.
 
-   ```bash
-   npm install
-   ```
+This will take you to a page where you can input various things. There's a back arrow in the top left to cancel and go back to the main page. At the very top you'll see "New Workout Name", click on that and type in the name you want for your workout. Below that you'll see the date you clicked on, and to the right of that is a red circle. Click on that and it'll bring up the color picker page, the idea here is to color code your workouts (which will appear as colored dots on the calendar screen) so that you can easily see what kind of workout it was from the calendar (Ex: I do a push/pull/legs split, push: red, pull :blue, legs: green). There's a selection of saved colors at the bottom you can click on and choose from, or you can move around the color wheel and adjust the saturation yourself. Once you've decided on the color you want you can click "Save". At any time you can click "Cancel" and it'll close the window. 
 
-2. Start the app
+Now you can click on the Select Exercise button and it'll bring up a drop down menu split into categories. For now those categories are Back, Arms, and Legs. Click on one of those categories to show the exercises within them, and click on the one you want. Now that exercise will be showing instead of Select Exercise. Next you can tap on the box below "Sets" and input the number of sets, and the same goes for "Reps" and "Weight". Once all that info is filled in you can click the "Add" button and a log showing the exercise you typed in will appear below, and all the fields you just entered will go back to default so you can enter another exercise. Once you've entered all of your exercises you can go to the bottom text box where you can add any notes you need to (failed at 6 reps on the last set of DB curls, etc.) Once you're satisfied you can click "Save" at the bottom.
 
-   ```bash
-   npx expo start
-   ```
+You'll be taken back to the calendar screen where you can see the day that you added the workout to will now have a colored dot (the color you chose) on it. Now you can click the "View Day" button on that day, which will take you to a page that summarizes what your workout was for that day. It'll show the date, the title of your workout, the color you chose, the exercises you did (as well as sets, reps, and weight), and the notes you added. If you click on a day without a workout logged for it and click "View Day" it'll just say there's no workout for that day. Once again, click the back arrow in the upper left hand corner to go back to the calendar screen.
 
-In the output, you'll find options to open the app in a
+# FUTURE UPDATES
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+Although the core functionality of the app is complete, there's a few more features I'd like to add or things I'd like to fix for the sake of being totally complete.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+1. Multiple dots on the same day, right now only one dot (workout) can be displayed on a day at a time
+2. Settings to add your own exercises and categories
+3. Fix overlapping text issue in the LogWorkoutScreen (bullet point text overlaps the dropdown menu)
+4. Remove exercises you added in the LogWorkoutScreen
+5. Edit the workout from within the ViewDayScreen so that you can change anything in case you made a mistake
 
-## Get a fresh project
+# DOWNLOAD
 
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Once Expo lets me into their build queue I will go ahead and make a .apk file for the android users to download right here on Github. Even though React Native is meant to be cross platform, apple doesn't allow people using their phones to download apps off the internet, so I'd have to make a dev account on the Apple App Store and pay a yearly fee and what not, so unfortunately the Apple build of this project will likely not be coming out. But I'll see about getting a web version going so that Apple Users can still see what it's like.
