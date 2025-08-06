@@ -24,4 +24,6 @@ Although the core functionality of the app is complete, there's a few more featu
 
 # DOWNLOAD
 
-Once Expo lets me into their build queue I will go ahead and make a .apk file for the android users to download right here on Github. Even though React Native is meant to be cross platform, apple doesn't allow people using their phones to download apps off the internet, so I'd have to make a dev account on the Apple App Store and pay a yearly fee and what not, so unfortunately the Apple build of this project will likely not be coming out. But I'll see about getting a web version going so that Apple Users can still see what it's like.
+The .apk file is available for download above! (Android only)
+
+Even though React Native is meant to be cross platform, apple doesn't allow people using their phones to download apps off the internet, so I'd have to make a dev account on the Apple App Store and pay a yearly fee and what not, so unfortunately the Apple build of this project will likely not be coming out. But I'll see about getting a web version going so that Apple Users can still see what it's like.
