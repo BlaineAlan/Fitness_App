@@ -169,15 +169,19 @@ const ExerciseDropdown = ( { value, onChangeText }) => {
     const ExerciseData = {
       Back: {
         color: '#220530',
-        exercises: ['Pull Ups', 'Deadlifts', 'Rows']
+        exercises: ['Pull Ups', 'Deadlifts', 'Rows', 'Lat Pull Down']
       },
       Arms: {
         color: '#220530',
-        exercises: ['Bicep Curls', 'Push Ups']
+        exercises: ['Bicep Curls', 'Push Ups', 'Preacher Curls', 'Bench', 'Lateral Raises', 'Chest Fly', 'Dips']
       },
       Legs: {
         color: '#220530',
-        exercises: ['Squats', 'Lunges', 'Leg Press']
+        exercises: ['Squats', 'Lunges', 'Good Mornings', 'Romanian Deadlift', 'Calf Raises', 'Split Squat', 'Tib Raises', 'Cossak Squat']
+      },
+      Core: {
+        color: '#220530',
+        exercises: ['Hanging Leg Raises', 'Plank', 'Knee Tuck']
       }
     };
 
@@ -405,6 +409,7 @@ const LogWorkoutScreen = () => {
         </View>
 
 
+
       <View style={{bottom: 170, right: 100, alignItems: 'center'}}>
 
         <View style={styles.exercisetext}>
@@ -414,7 +419,6 @@ const LogWorkoutScreen = () => {
         <ExerciseDropdown value={selectedExercise} onChangeText={setSelectedExercise}/>
         </View>
       </View>
-
         {exercises.map((ex, index) => (
           <View key={index} style={styles.AddedExercises}>
             <Text style={{color: 'white', fontSize: 20}}>
